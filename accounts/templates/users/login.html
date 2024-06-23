@@ -1,0 +1,142 @@
+<!-- your_app/templates/your_app/login.html -->
+
+<!DOCTYPE html>
+{% load static %}   
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!--=============== REMIXICONS ===============-->
+   <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+   <!--=============== CSS ===============-->
+   <link rel="stylesheet" href="{% static "css/login.css" %}">
+
+   
+   <link rel="stylesheet" href="{% static "css/homePage.css" %} ">
+   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,300,700">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+   <link rel="icon" href="https://yt3.ggpht.com/a/AGF-l78km1YyNXmF0r3-0CycCA0HLA_i6zYn_8NZEg=s900-c-k-c0xffffffff-no-rj-mo" type="image/gif" sizes="16x16">
+   <!-- EXTERNAL LINKS -->
+   <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
+   <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+
+   <title>Animated login form - Bedimcode</title>
+</head>
+<body>
+
+	<nav class="navbar navbar-toggleable-md fixed-top navbar-transparent" color-on-scroll="500">
+		<div class="container">
+			<div class="navbar-translate">
+				<button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-bar"></span>
+					<span class="navbar-toggler-bar"></span>
+					<span class="navbar-toggler-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">CREATIO</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbarToggler">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/" target="_blank">
+							<i class="fa fa-twitter"></i>
+							<p class="hidden-lg-up">Twitter</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/" target="_blank">
+							<i class="fa fa-facebook-square"></i>
+							<p class="hidden-lg-up">Facebook</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/" target="_blank">
+							<i class="fa fa-instagram"></i>
+							<p class="hidden-lg-up">Instagram</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" rel="tooltip" title="Star on GitHub" data-placement="bottom" href="https://www.github.com/" target="_blank">
+							<i class="fa fa-github"></i>
+							<p class="hidden-lg-up">GitHub</p>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/" target="_blank">
+							<i class="fa fa-shopping-cart"></i>
+							<p class="hidden-lg-up">CART</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+   <div class="login">
+      <img src="https://th.bing.com/th/id/R.56843a75912d1354fccd5871d69befad?rik=ljL9H8ejF%2b2DTA&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fnWfQ7C2.jpg&ehk=0EMHrDqYfu7mQtzvxz5sLleKgwwoj7jDQd85qwMnUqg%3d&risl=&pid=ImgRaw&r=0" alt="login image" class="login__img">
+
+      <form action="" class="login__form" method="POST">
+         {% csrf_token %}
+         
+         <h1 class="login__title">Login</h1>
+
+         <div class="login__content">
+            <div class="login__box">
+               <i class="ri-mail-line login__icon"></i>
+
+               <div class="login__box-input">
+                  <input type="text" required class="login__input" id="login-username" name="username" placeholder="Email">
+               </div>
+            </div>
+
+            <div class="login__box">
+               <i class="ri-lock-2-line login__icon"></i>
+
+               <div class="login__box-input">
+                  <input type="password" required class="login__input" id="login-password" name="password" placeholder="Password">
+                  <i class="ri-eye-off-line login__eye" id="login-eye"></i>
+               </div>
+            </div>
+         </div>
+
+         <div class="login__check">
+            <div class="login__check-group">
+               <input type="checkbox" class="login__check-input" id="login-check" name="remember_me">
+               <label for="login-check" class="login__check-label">Remember me</label>
+            </div>
+
+         </div>
+
+         <button type="submit" class="login__button">Login</button>
+
+         <p class="login__register" style="color:white;">
+            Don't have an account? <a href="/accounts/register" style="color:#00cdd7;">Register</a>
+         </p>
+         <div class="container">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li style="color:red; font-weghit:bold;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+         </div>
+      </form>
+   </div>
+
+
+   
+   <!--=============== MAIN JS ===============-->
+   <script src="{% static "/js/main.js"%}"></script>
+   <script src="{% static "/js/login.js"%}"></script>
+
+</body>
+</html>

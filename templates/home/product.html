@@ -1,0 +1,195 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Product Page</title>
+    <!-- css -->
+    <link rel="stylesheet" href="{% static "css/contentDetails.css" %} ">
+    <link rel="stylesheet" href="{% static "css/homePage.css" %}">
+    <link rel="stylesheet" href="{% static "css/slider.css" %}">
+    <link rel="stylesheet" href="{% static "css/product.css" %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width" />
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,300,700">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link rel="icon" href="https://yt3.ggpht.com/a/AGF-l78km1YyNXmF0r3-0CycCA0HLA_i6zYn_8NZEg=s900-c-k-c0xffffffff-no-rj-mo" type="image/gif" sizes="16x16">
+    <!-- EXTERNAL LINKS -->
+    <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
+
+</head>
+<body>
+
+    <nav class="navbar navbar-toggleable-md fixed-top" color-on-scroll="500">
+        <div class="container">
+            <div class="navbar-translate">
+                <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar"></span>
+                    <span class="navbar-toggler-bar"></span>
+                    <span class="navbar-toggler-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">CREATIO</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/" target="_blank">
+                            <i class="fa fa-twitter"></i>
+                            <p class="hidden-lg-up">Twitter</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/" target="_blank">
+                            <i class="fa fa-facebook-square"></i>
+                            <p class="hidden-lg-up">Facebook</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/" target="_blank">
+                            <i class="fa fa-instagram"></i>
+                            <p class="hidden-lg-up">Instagram</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="Star on GitHub" data-placement="bottom" href="https://www.github.com/" target="_blank">
+                            <i class="fa fa-github"></i>
+                            <p class="hidden-lg-up">GitHub</p>
+                        </a>
+                    </li>
+                    {%if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="/cart" target="_blank">
+                            <i class="fa fa-shopping-cart"></i>
+                            <p class="hidden-lg-up">CART</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="ORDERS" data-placement="bottom" href="/orders/" target="_blank">
+                            <p class="hidden-lg-up">ORDERS</p>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="/accounts/login" target="_blank">
+                            <i class="fa fa-shopping-cart"></i>
+                            <p class="hidden-lg-up">CART</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        {%if request.user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="btn btn-danger btn-round">LogOut</a>
+
+                        {% else %}
+                        <a href="/accounts/login" class="btn btn-danger btn-round">LogIn</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- product section -->
+    <section class="product-container" style="margin-top:120px;">
+        <!-- left side -->
+        <div class="img-card">
+            <img src="{{product.main_image.url}}" alt="" id="featured-image">
+            <!-- small img -->
+            <div class="small-Card">
+                <img src="{{product.firist_image.url}}" alt="" class="small-Img">
+                <img src="{{product.second_image.url}}" alt="" class="small-Img">
+                <img src="{{product.main_image.url}}" alt="" class="small-Img">
+            <!--     <img src="img/image-1.png" alt="" class="small-Img">  -->
+            </div>
+        </div>
+        <!-- Right side -->
+        <div class="product-info">
+            <h3>{{product.name}}</h3>
+            <h5>{{ product.price }}</del></h5>
+            <p>{{ product.description }}</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore accusamus natus dolorum. Quaerat nulla quod doloremque, officia quis provident amet adipisci unde esse iure delectus, maxime inventore optio fuga nisi?</p>
+
+
+            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <div class="sizes">
+                    <p>Size:</p>
+                    <select id="size" class="size-option" name="size" required>
+                        <option value="xxl">XXL</option>
+                        <option value="xl">XL</option>
+                        <option value="medium">Medium</option>
+                        <option value="small">Small</option>
+                    </select>
+                </div>
+                <div class="quantity">
+
+
+            <form action="{% url 'add_to_cart' product.id %}" method="post">
+                {% csrf_token %}
+                <div class="quantity">
+                    <input type="number" value="1" min="1" name='quantity'>
+                    <button type="submit">Add to Cart</button>
+                </div>
+            </form>
+
+            
+    </section>
+
+    <footer class="text-center text-lg-start text-white" style="background-color: #929fba; width:100%; padding: 30px 0; margin-top:200px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">CREATIO</h6>
+                    <p>
+                        At Creatio, we believe that every t-shirt should tell a unique story. Our collection features high-quality, creatively designed t-shirts that reflect your personal journey and passions. Each piece is crafted with care to ensure comfort and durability, allowing you to wear your story proudly.
+                    </p>
+                </div>
+    
+
+    
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
+                    <p><i class="fa fa-home mr-3"></i> Egypt, cairo</p>
+                    <p><i class="fa fa-envelope mr-3"></i> mohamwedwael528@gmail.com</p>
+                    <p><i class="fa fa-phone mr-3"></i> +201026671593</p>
+                </div>
+    
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">Follow us</h6>
+                    <a class="btn btn-primary btn-floating m-1" style="background-color: #dd4b39" href="#"><i class="fa fa-google"></i></a>
+                    <a class="btn btn-primary btn-floating m-1" style="background-color: #ac2bac" href="#"><i class="fa fa-instagram"></i></a>
+                </div>
+            </div>
+    
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2024 Copyright:
+                <a class="text-white" href="https://www.facebook.com/profile.php?id=100007597125898">Created By <span style="font-style:under-line">@mohamed wael </span></a>
+            </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.small-Img').forEach(item => {
+            item.addEventListener('click', event => {
+                document.getElementById('featured-image').src = event.target.src;
+            });
+        });
+    </script>
+
+    <!-- script tags -->
+    <script src="{% static "js/cart.js" %}"></script>
+    <script src="{% static "js/homePage.js" %}"></script>
+      <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+</body>
+</html>
