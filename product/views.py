@@ -1,147 +1,92 @@
-from pyexpat.errors import messages
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.db.models import Sum
-from django.db import transaction
-from decimal import Decimal, ROUND_HALF_UP
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+from django.contrib.auth.models import User
+from django import forms
 
 
+# Create your models here.
 
-from .models import Product, CartItem, Order, OrderItem
-from .serializers import ProductSerializers
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
+class Category(models.TextChoices):
+    SHIRTS = 'T-SHIRTS'
+    PANTS = 'PANTS'
+    CAPS = 'CAPS'
 
+class Size(models.TextChoices):
+    SMALL = 'SMALL'
+    MEDIUM = 'MEDIUM'
+    LARGE = 'LARGE'
 
+class Status(models.TextChoices):
+    pending = 'pending'
+    Out_for_delivary = 'Out for delivary'
+    deliverd = 'deliverd'
 
+class Product(models.Model):
+    name = models.CharField(max_length=200,default="",blank=False)
+    main_image = models.ImageField(upload_to='photos/',default=timezone.now)
+    firist_image = models.ImageField(upload_to='photos/',default=timezone.now)
+    second_image = models.ImageField(upload_to='photos/',default=timezone.now)
+    description = models.TextField(max_length=1000,default="",blank=False)
+    price = models.DecimalField(max_digits=7,decimal_places=2,default=0)
+    brand = models.CharField(max_length=200,default="",blank=False)
+    category = models.CharField(max_length=40,choices=Category.choices)
+    ratings = models.DecimalField(max_digits=3,decimal_places=2,default=0)
+    stocks = models.IntegerField(default=0)
+    creatAt = models.DateField(auto_now=True)
+    size = models.CharField(max_length=40,choices=Size.choices)
+    user  = models.ForeignKey(User, null=True,on_delete=models.SET_NULL)
 
-# Create your views here.
-
-def products(request):
-    x = {'products':Product.objects.all()}
-    return render(request, 'home/index.html', x)
-
-def product_detail(request, product_id):
-    product = Product.objects.get(id=product_id)
-    return render(request, 'home/product.html', {'product': product})
-
-
-
-@login_required
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    
-    if request.method == 'POST':
-        size = request.POST.get('size')
-        quantity = request.POST.get('quantity')
-        color = request.POST.get('color')
-        
-        # التحقق من أن الحجم والكمية تم تقديمهم
-        if size and quantity and color:
-            cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product, size=size, color=color)
-            if not created:
-                cart_item.quantity = quantity
-            cart_item.save()
-
-    return redirect('cart_detail')
+    def __str__(self):
+        return self.name
 
 
-@login_required
-def cart_detail(request):
-    cart_items = CartItem.objects.filter(user=request.user)
-    return render(request, 'home/cart_detail.html', {'cart_items': cart_items})
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=7,decimal_places=2,default=0)
+    quantity = models.PositiveIntegerField(default=1)
+    size = models.CharField(max_length=50, default='none')
+    color = models.CharField(default='none', max_length=50)
+
+    def __str__(self):
+        return f'{self.quantity} x {self.product.name}'
 
 
-@login_required
-def remove_from_cart(request, item_id):
-    cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    cart_item.delete()
-    return redirect('cart_detail')
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(CartItem)
+    status = models.CharField(max_length=20, default='Pending')  # حالة الطلب، مثل "معلق"، "مؤكد"
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
-@login_required
-@login_required
-@transaction.atomic
-def place_order(request):
-    cart_items = CartItem.objects.filter(user=request.user)
+class OrderItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='photos/',default=timezone.now)
+    size = models.CharField(max_length=40,default="none")
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    color = models.CharField(default="none",max_length=50)
+    status = models.CharField(max_length=20,choices=Status.choices, default='Pending')  # حالة الطلب، مثل "معلق"، "مؤكد
 
-    if request.method == 'POST':
-        order = Order.objects.create(user=request.user)
+    first_name = models.CharField(max_length=100,default="none")
+    last_name = models.CharField(max_length=100,default="none")
+    company_name = models.CharField(max_length=100,default="none")
+    address = models.CharField(max_length=250,default="none")
+    email = models.EmailField(default="none")
+    phone = models.CharField(max_length=15,default="none")
+    additional_info = models.CharField(max_length=500,default="none")
 
-        for cart_item in cart_items:
-            OrderItem.objects.create(
-                order=order,
-                product_name=cart_item.product.name,
-                price=cart_item.product.price,
-                size=cart_item.size,
-                quantity=cart_item.quantity,
-                image=cart_item.product.main_image,
-                color=cart_item.color,
-                user=request.user
-            )
-        
-        cart_items.delete()
-        return redirect('order_confirmation', order.id)
-
-    return redirect('cart_detail')
-
-
-@login_required
-@csrf_exempt
-@require_POST
-def cancel_order(request, order_id):
-    user = request.user
-    order_items = OrderItem.objects.filter(order_id=order_id, user=user)
-    
-    if order_items.exists():
-        order_items.delete()
-        return JsonResponse({"message": "Order items deleted successfully."}, status=200)
-    
-    return JsonResponse({"message": "No order items found."}, status=404)
+    def __str__(self):
+        return f'{self.product_name} - {self.user.username}'
 
 
 
 
-@login_required
-def order_confirmation(request, order_id):
-    user = request.user 
-    order = get_object_or_404(Order, id=order_id)
-    order_items = OrderItem.objects.filter(order=order)
-    total = Decimal(order_items.aggregate(total_price=Sum('price'))['total_price'] or 0)
-
-    total = total.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-
-    if request.method == 'POST':
-        for order_item in order_items:
-            order_item.first_name = request.POST.get('first_name')
-            order_item.last_name = request.POST.get('last_name')
-            order_item.company_name = request.POST.get('company_name', '')
-            order_item.address = request.POST.get('address')
-            order_item.email = request.POST.get('email')
-            order_item.phone = request.POST.get('phone')
-            order_item.additional_info = request.POST.get('additional_info', '')
-            order_item.save()
-        
-        return redirect('succecful_orderd')
-
-    return render(request, 'home/order_confirmation.html', {'order': order, 'order_items': order_items, 'total': total, 'order_id': order_id})
 
 
-def orders(request):
-    user = request.user  # الحصول على معلومات المستخدم الحالي
-    orders = OrderItem.objects.filter(user=user)
-    total = Decimal(orders.aggregate(total_price=Sum('price'))['total_price'] or 0)
-    total = total.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-
-    context = {'orders': orders, 'user': user, 'total': total}
-    return render(request, 'home/orders.html', context)
-
-def succecful(request):
-    return render(request,'home/succecful_order.html')
 
 
