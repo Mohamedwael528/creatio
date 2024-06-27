@@ -39,10 +39,11 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         size = request.POST.get('size')
         quantity = request.POST.get('quantity')
+        color = request.POST.get('color')
         
         # التحقق من أن الحجم والكمية تم تقديمهم
-        if size and quantity:
-            cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product, size=size)
+        if size and quantity and color:
+            cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product, size=size, color=color)
             if not created:
                 cart_item.quantity = quantity
             cart_item.save()
@@ -77,9 +78,10 @@ def place_order(request):
                 order=order,
                 product_name=cart_item.product.name,
                 price=cart_item.product.price,
-                size=cart_item.product.size,
+                size=cart_item.size,
                 quantity=cart_item.quantity,
                 image=cart_item.product.main_image,
+                color=cart_item.color,
                 user=request.user
             )
         
