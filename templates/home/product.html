@@ -24,7 +24,20 @@
     <script src="http://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
-
+    <style>
+        .color-circle {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: border 0.3s ease;
+        }
+        
+        .color-circle.selected {
+            border: 3px solid black;
+        }
+        
+    </style>
 </head>
 <body>
 
@@ -117,7 +130,6 @@
             <p>{{ product.description }}</p>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore accusamus natus dolorum. Quaerat nulla quod doloremque, officia quis provident amet adipisci unde esse iure delectus, maxime inventore optio fuga nisi?</p>
 
-
             <form method="post" action="{% url 'add_to_cart' product.id %}">
                 {% csrf_token %}
                 <div class="sizes">
@@ -129,6 +141,21 @@
                         <option value="small">Small</option>
                     </select>
                 </div>
+                <div class="colors">
+                    <p>Color:</p>
+                    <div style="display: flex;">
+                        <label style="margin-right: 20px; cursor: pointer;">
+                            <input type="radio" name="color" value="black" style="display:none;" required>
+                            <span class="color-circle" style="background-color: #1a1a1a;"></span>
+                        </label>
+                        <label style="cursor: pointer;">
+                            <input type="radio" name="color" value="white" style="display:none;" required>
+                            <span class="color-circle" style="background-color: #e3d8d8;"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                
                 <div class="quantity">
 
 
@@ -182,6 +209,18 @@
             });
         });
     </script>
+
+    <script>
+        document.querySelectorAll('input[name="color"]').forEach(item => {
+            item.addEventListener('change', event => {
+                document.querySelectorAll('.color-circle').forEach(circle => {
+                    circle.classList.remove('selected');
+                });
+                event.target.nextElementSibling.classList.add('selected');
+            });
+        });
+    </script>
+    
 
     <!-- script tags -->
     <script src="{% static "js/cart.js" %}"></script>
